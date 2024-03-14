@@ -2,11 +2,13 @@ import 'dart:async';
 
 import 'package:flutter/services.dart';
 
+/// Device storage type
 enum DeviceStorageType {
   internal,
   external,
 }
 
+/// A class through which all methods can be statically accessed.
 class GetStorageInfo {
   static const MethodChannel _channel = MethodChannel('get_storage_info');
 
