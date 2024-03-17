@@ -1,3 +1,10 @@
+## 0.1.0
+
+#### **Breaking changes** to getIsLowOnStorage and getIsStorageBelowThreshold
+
+- ``getIsLowOnStorage`` now uses the free storage to determine whether the device is low on storage. 
+- The ``threshold`` param for ``getIsLowOnStorage`` and ``getIsStorageBelowThreshold`` is now in MB instead of percent.
+
 ## 0.0.2
 
 * Improve documentation

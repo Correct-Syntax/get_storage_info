@@ -160,38 +160,24 @@ class GetStorageInfo {
     return storageUsageValue;
   }
 
-  /// Get whether the given [storageType] is low on storage, based on the [threshold].
+  /// Get whether the given [storageType] is low on storage, based on the [threshold] (in MB).
   static Future<bool> getIsLowOnStorage(DeviceStorageType storageType,
-      {double threshold = 0.98}) async {
-    double storageTotal = 0.0;
-    double storageUsed = 0.0;
+      {double threshold = 500.0}) async {
+    double storageFree = 0.0;
     if (storageType == DeviceStorageType.internal) {
-      storageTotal = await GetStorageInfo.getStorageTotalSpaceInGB;
-      storageUsed = await GetStorageInfo.getStorageUsedSpaceInGB;
+      storageFree = await GetStorageInfo.getStorageFreeSpaceInMB;
     } else if (storageType == DeviceStorageType.external) {
-      storageTotal = await GetStorageInfo.getExternalStorageTotalSpaceInGB;
-      storageUsed = await GetStorageInfo.getExternalStorageUsedSpaceInGB;
+      storageFree = await GetStorageInfo.getExternalStorageFreeSpaceInMB;
     } else {
       throw Exception('storageType must be a value of DeviceStorageType');
     }
 
-    double storageUsageValue = getStorageUsageValue(storageUsed, storageTotal);
-
-    return getIsStorageBelowThreshold(storageUsageValue, threshold);
+    return getIsStorageBelowThreshold(storageFree, threshold);
   }
 
-  /// Get whether [storageUsageValue] is above the storage usage threshold for low storage.
-  static bool getIsStorageBelowThreshold(
-      double storageUsageValue, double threshold) {
-    if (storageUsageValue <= 0.0 || storageUsageValue >= 1.0) {
-      throw Exception(
-          'storageUsageValue must be within the range of 0.0 and 1.0');
-    }
-    if (threshold <= 0.0 || threshold >= 1.0) {
-      throw Exception('threshold must be within the range of 0.0 and 1.0');
-    }
-
-    if (storageUsageValue >= threshold) {
+  /// Get whether [storageUsageValue] is below the storage usage threshold for low storage.
+  static bool getIsStorageBelowThreshold(double storageFree, double threshold) {
+    if (storageFree <= threshold) {
       return true;
     } else {
       return false;

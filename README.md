@@ -10,7 +10,7 @@ This is a friendly fork of [storage_info](https://github.com/aakashkondhalkar/st
 Add ``get_storage_info`` to your pubspec.yaml:
 ```yaml
 dependencies:
-  get_storage_info: ^0.0.1
+  get_storage_info: ^0.1.0
 ```
 
 ## Usage
@@ -99,23 +99,20 @@ This method calls the above methods internally to get the storage info, so if yo
 ```dart
 DeviceStorageType storageType = DeviceStorageType.internal;
 
-// Optionally set the threshold. The default is 0.98 (98%)
-double threshold = 0.96;
+// Optionally set the threshold. The default is 500MB.
+double threshold = 600.0;
 
 bool isLowOnStorage = await GetStorageInfo.getIsLowOnStorage(storageType, threshold);
 >> false
 ```
 
-#### Get whether the storage is above the low storage threshold
+#### Get whether the storage is below the low storage threshold
 
 ```dart
-double storageTotal = await GetStorageInfo.getExternalStorageTotalSpaceInGB;
-double storageUsed = await GetStorageInfo.getExternalStorageUsedSpaceInGB;
+double threshold = 600.0; // in MB
+double storageFree = await GetStorageInfo.getExternalStorageFreeSpaceInMB;
 
-double threshold = 0.96;
-double storageUsageValue = GetStorageInfo.getStorageUsageValue(storageUsed, storageTotal);
-
-bool isBelowThreshold = GetStorageInfo.getIsStorageBelowThreshold(storageUsageValue, threshold);
+bool isBelowThreshold = GetStorageInfo.getIsStorageBelowThreshold(storageFree, threshold);
 >> true
 ```
 
