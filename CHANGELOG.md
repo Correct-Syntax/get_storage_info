@@ -1,3 +1,7 @@
+## 0.2.0
+
+- Operations are now run on a separate thread via a coroutine.
+
 ## 0.1.0
 
 #### **Breaking changes** to getIsLowOnStorage and getIsStorageBelowThreshold
