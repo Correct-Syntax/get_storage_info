@@ -9,6 +9,10 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 import java.io.File
 
 /** GetStorageInfoPlugin */
@@ -20,6 +24,8 @@ class GetStorageInfoPlugin : FlutterPlugin, MethodCallHandler {
     private lateinit var channel: MethodChannel
     private lateinit var context: Context
 
+    private var coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.Default)
+
     override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
         context = flutterPluginBinding.applicationContext
         channel = MethodChannel(flutterPluginBinding.binaryMessenger, "get_storage_info")
@@ -30,37 +36,39 @@ class GetStorageInfoPlugin : FlutterPlugin, MethodCallHandler {
         call: MethodCall,
         result: Result,
     ) {
-        when (call.method) {
-            "getStorageFreeSpace" -> result.success(getStorageFreeSpace())
-            "getStorageUsedSpace" -> result.success(getStorageUsedSpace())
-            "getStorageTotalSpace" -> result.success(getStorageTotalSpace())
+        coroutineScope.launch {
+            when (call.method) {
+                "getStorageFreeSpace" -> result.success(getStorageFreeSpace())
+                "getStorageUsedSpace" -> result.success(getStorageUsedSpace())
+                "getStorageTotalSpace" -> result.success(getStorageTotalSpace())
 
-            "getExternalStorageTotalSpace" -> result.success(getExternalStorageTotalSpace())
-            "getExternalStorageFreeSpace" -> result.success(getExternalStorageFreeSpace())
-            "getExternalStorageUsedSpace" -> result.success(getExternalStorageUsedSpace())
+                "getExternalStorageTotalSpace" -> result.success(getExternalStorageTotalSpace())
+                "getExternalStorageFreeSpace" -> result.success(getExternalStorageFreeSpace())
+                "getExternalStorageUsedSpace" -> result.success(getExternalStorageUsedSpace())
 
-            "getStorageFreeSpaceInMB" -> result.success(getStorageFreeSpaceInMB())
-            "getStorageUsedSpaceInMB" -> result.success(getStorageUsedSpaceInMB())
-            "getStorageTotalSpaceInMB" -> result.success(getStorageTotalSpaceInMB())
+                "getStorageFreeSpaceInMB" -> result.success(getStorageFreeSpaceInMB())
+                "getStorageUsedSpaceInMB" -> result.success(getStorageUsedSpaceInMB())
+                "getStorageTotalSpaceInMB" -> result.success(getStorageTotalSpaceInMB())
 
-            "getStorageFreeSpaceInGB" -> result.success(getStorageFreeSpaceInGB())
-            "getStorageUsedSpaceInGB" -> result.success(getStorageUsedSpaceInGB())
-            "getStorageTotalSpaceInGB" -> result.success(getStorageTotalSpaceInGB())
+                "getStorageFreeSpaceInGB" -> result.success(getStorageFreeSpaceInGB())
+                "getStorageUsedSpaceInGB" -> result.success(getStorageUsedSpaceInGB())
+                "getStorageTotalSpaceInGB" -> result.success(getStorageTotalSpaceInGB())
 
-            "getExternalStorageTotalSpaceInMB" -> result.success(getExternalStorageTotalSpaceInMB())
-            "getExternalStorageFreeSpaceInMB" -> result.success(getExternalStorageFreeSpaceInMB())
-            "getExternalStorageUsedSpaceInMB" -> result.success(getExternalStorageUsedSpaceInMB())
+                "getExternalStorageTotalSpaceInMB" -> result.success(getExternalStorageTotalSpaceInMB())
+                "getExternalStorageFreeSpaceInMB" -> result.success(getExternalStorageFreeSpaceInMB())
+                "getExternalStorageUsedSpaceInMB" -> result.success(getExternalStorageUsedSpaceInMB())
 
-            "getExternalStorageTotalSpaceInGB" -> result.success(getExternalStorageTotalSpaceInGB())
-            "getExternalStorageFreeSpaceInGB" -> result.success(getExternalStorageFreeSpaceInGB())
-            "getExternalStorageUsedSpaceInGB" -> result.success(getExternalStorageUsedSpaceInGB())
+                "getExternalStorageTotalSpaceInGB" -> result.success(getExternalStorageTotalSpaceInGB())
+                "getExternalStorageFreeSpaceInGB" -> result.success(getExternalStorageFreeSpaceInGB())
+                "getExternalStorageUsedSpaceInGB" -> result.success(getExternalStorageUsedSpaceInGB())
 
-            "getSizeOfDirectoryInMB" -> {
-                val directory: String? = call.argument("directory")
-                result.success(getSizeOfDirectoryInMB(directory!!))
+                "getSizeOfDirectoryInMB" -> {
+                    val directory: String? = call.argument("directory")
+                    result.success(getSizeOfDirectoryInMB(directory!!))
+                }
+
+                else -> result.notImplemented()
             }
-
-            else -> result.notImplemented()
         }
     }
 
