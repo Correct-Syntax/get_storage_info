@@ -145,9 +145,9 @@ class GetStorageInfo {
   /// Get the [DeviceStorageType] based on the given [path].
   static DeviceStorageType getStorageTypeFromPath(String path) {
     // Notice there is no end slash (that is important)
-    return path.startsWith('/storage/emulated/0') == true
-        ? DeviceStorageType.internal
-        : DeviceStorageType.external;
+    return path.startsWith('/storage/emulated/0') == false
+        ? DeviceStorageType.external
+        : DeviceStorageType.internal;
   }
 
   /// Get a double from 0.0 to 1.0 representing the storage usage value based
