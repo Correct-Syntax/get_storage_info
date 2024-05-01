@@ -1,3 +1,7 @@
+## 0.2.1
+
+- Defaults to ``DeviceStorageType.internal`` to avoid potential ``ArrayIndexOutOfBoundsException`` errors.
+
 ## 0.2.0
 
 - Operations are now run on a separate thread via a coroutine.
