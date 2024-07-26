@@ -1,3 +1,7 @@
+## 0.2.2
+
+- Fixes bug where assuming the internal storage path could cause a crash on some devices. 
+
 ## 0.2.1
 
 - Defaults to ``DeviceStorageType.internal`` to avoid potential ``ArrayIndexOutOfBoundsException`` errors.

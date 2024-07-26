@@ -10,7 +10,7 @@ This is a friendly fork of [storage_info](https://github.com/aakashkondhalkar/st
 Add ``get_storage_info`` to your pubspec.yaml:
 ```yaml
 dependencies:
-  get_storage_info: ^0.2.1
+  get_storage_info: ^0.2.2
 ```
 
 ## Usage
