@@ -1,3 +1,8 @@
+## 0.3.0
+
+- Added ``isExternalStorageWritable`` method.
+- Improved documentation.
+
 ## 0.2.2
 
 - Fixes bug where assuming the internal storage path could cause a crash on some devices. 
@@ -19,7 +24,7 @@
 
 ## 0.0.2
 
-* Improve documentation
+* Improved documentation.
 
 ## 0.0.1
 

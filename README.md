@@ -2,7 +2,7 @@
 
 A Flutter plugin to get information about storage on Android. Get free, used, and total internal and external (SD card) storage space, and more.
 
-This is a friendly fork of [storage_info](https://github.com/aakashkondhalkar/storage_info), with additional methods.
+This is a friendly fork of [storage_info](https://github.com/aakashkondhalkar/storage_info) with additional useful methods and improvements.
 
 
 ## Installing
@@ -10,7 +10,7 @@ This is a friendly fork of [storage_info](https://github.com/aakashkondhalkar/st
 Add ``get_storage_info`` to your pubspec.yaml:
 ```yaml
 dependencies:
-  get_storage_info: ^0.2.2
+  get_storage_info: ^0.3.0
 ```
 
 ## Usage
@@ -30,38 +30,45 @@ All methods can be statically accessed via the ``GetStorageInfo`` class.
 ```dart
 
 // Get internal storage total space in bytes, MB and GB
-await StorageInfo.getStorageTotalSpace; // return int
-await StorageInfo.getStorageTotalSpaceInMB; // return double
-await StorageInfo.getStorageTotalSpaceInGB; // return double
+await GetStorageInfo.getStorageTotalSpace; // return int
+await GetStorageInfo.getStorageTotalSpaceInMB; // return double
+await GetStorageInfo.getStorageTotalSpaceInGB; // return double
 
 // Get internal storage free space in bytes, MB and GB
-await StorageInfo.getStorageFreeSpace; // return int
-await StorageInfo.getStorageFreeSpaceInMB; // return double
-await StorageInfo.getStorageFreeSpaceInGB; // return double
+await GetStorageInfo.getStorageFreeSpace; // return int
+await GetStorageInfo.getStorageFreeSpaceInMB; // return double
+await GetStorageInfo.getStorageFreeSpaceInGB; // return double
 
 // Get internal storage used space in bytes, MB and GB
-await StorageInfo.getStorageUsedSpace; // return int
-await StorageInfo.getStorageUsedSpaceInMB; // return double
-await StorageInfo.getStorageUsedSpaceInGB; // return double
+await GetStorageInfo.getStorageUsedSpace; // return int
+await GetStorageInfo.getStorageUsedSpaceInMB; // return double
+await GetStorageInfo.getStorageUsedSpaceInGB; // return double
 ```
 
 #### Get external (SD card) storage info
 
 ```dart
 // Get external storage total space in bytes, MB, and GB
-return await StorageInfo.getExternalStorageTotalSpace; // return int
-return await StorageInfo.getExternalStorageTotalSpaceInMB; // return double
-return await StorageInfo.getExternalStorageTotalSpaceInGB; // return double
+return await GetStorageInfo.getExternalStorageTotalSpace; // return int
+return await GetStorageInfo.getExternalStorageTotalSpaceInMB; // return double
+return await GetStorageInfo.getExternalStorageTotalSpaceInGB; // return double
 
 // Get external storage free space in bytes, MB, and GB
-return await StorageInfo.getExternalStorageFreeSpace; // return int
-return await StorageInfo.getExternalStorageFreeSpaceInMB; // return double
-return await StorageInfo.getExternalStorageFreeSpaceInGB; // return double
+return await GetStorageInfo.getExternalStorageFreeSpace; // return int
+return await GetStorageInfo.getExternalStorageFreeSpaceInMB; // return double
+return await GetStorageInfo.getExternalStorageFreeSpaceInGB; // return double
 
 // Get external storage used space in bytes, MB, and GB
-return await StorageInfo.getExternalStorageUsedSpace; // return int
-return await StorageInfo.getExternalStorageUsedSpaceInMB; // return double
-return await StorageInfo.getExternalStorageUsedSpaceInGB; // return double
+return await GetStorageInfo.getExternalStorageUsedSpace; // return int
+return await GetStorageInfo.getExternalStorageUsedSpaceInMB; // return double
+return await GetStorageInfo.getExternalStorageUsedSpaceInGB; // return double
+```
+
+#### Get whether the external storage is mounted and writable
+
+```dart
+bool isWritable = await GetStorageInfo.isExternalStorageWritable; // return bool
+>> true
 ```
 
 #### Get the size of a given directory in MB
