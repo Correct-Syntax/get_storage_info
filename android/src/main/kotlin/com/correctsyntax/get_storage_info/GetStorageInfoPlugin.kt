@@ -62,6 +62,8 @@ class GetStorageInfoPlugin : FlutterPlugin, MethodCallHandler {
                 "getExternalStorageFreeSpaceInGB" -> result.success(getExternalStorageFreeSpaceInGB())
                 "getExternalStorageUsedSpaceInGB" -> result.success(getExternalStorageUsedSpaceInGB())
 
+                "isExternalStorageWritable" -> result.success(isExternalStorageWritable())
+
                 "getSizeOfDirectoryInMB" -> {
                     val directory: String? = call.argument("directory")
                     result.success(getSizeOfDirectoryInMB(directory!!))
@@ -168,6 +170,15 @@ class GetStorageInfoPlugin : FlutterPlugin, MethodCallHandler {
     private fun getExternalStorageTotalSpaceInGB(): Double {
         val totalSpace: Double = getExternalStorageTotalSpace().toDouble() / 1024 / 1024 / 1024
         return totalSpace
+    }
+
+    // Check if external storage is writable
+    private fun isExternalStorageWritable(): Boolean {
+        val state: String = Environment.getExternalStorageState();
+        if (Environment.MEDIA_MOUNTED.equals(state)) {
+            return true;
+        }
+        return false;
     }
 
     // Directory size
