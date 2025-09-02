@@ -29,8 +29,6 @@ android {
         namespace 'com.correctsyntax.get_storage_info'
     }
 
-    compileSdk 34
-
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -46,7 +44,9 @@ android {
     }
 
     defaultConfig {
-        minSdkVersion 23
+        compileSdk 36
+        targetSdkVersion 36
+        minSdkVersion 24
     }
 
     dependencies {

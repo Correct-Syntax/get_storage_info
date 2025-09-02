@@ -1,3 +1,8 @@
+## 0.4.0
+
+- Compile and target sdk is now 36 (Android 16).
+- Dropped support for Android 6.
+
 ## 0.3.0
 
 - Added ``isExternalStorageWritable`` method.
