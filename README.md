@@ -115,3 +115,19 @@ bool isBelowThreshold = GetStorageInfo.getIsStorageBelowThreshold(storageFree, t
 >> true
 ```
 
+
+## Publishing this package
+
+```
+# Format all Dart files to standard convention
+flutter format .
+
+# Check for code issues and validation suggestions
+flutter analyze
+
+# Perform a dry-run test to see exactly what pub.dev will evaluate
+flutter pub publish --dry-run
+
+# Publish
+flutter pub publish
+```
