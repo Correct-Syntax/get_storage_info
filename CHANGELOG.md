@@ -1,3 +1,7 @@
+## 0.5.2
+
+- Fixes (another!) build error.
+
 ## 0.5.1
 
 - Fixes a build error.
