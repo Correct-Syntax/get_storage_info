@@ -1,3 +1,7 @@
+## 0.5.1
+
+- Fixes a build error.
+
 ## 0.5.0
 
 - Compile and target sdk is now 37 (Android 17).

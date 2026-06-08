@@ -1,6 +1,6 @@
 plugins {
     id("com.android.library")
-    kotlin("android") version "2.1.21"
+    kotlin("android")
 }
 
 group = "com.correctsyntax.get_storage_info"
