@@ -5,14 +5,6 @@ A Flutter plugin to get information about storage on Android. Get free, used, an
 This is a friendly fork of [storage_info](https://github.com/aakashkondhalkar/storage_info) with additional useful methods and improvements.
 
 
-## Installing
-
-Add ``get_storage_info`` to your pubspec.yaml:
-```yaml
-dependencies:
-  get_storage_info: ^0.4.0
-```
-
 ## Usage
 
 ### Importing

@@ -1,3 +1,9 @@
+## 0.5.0
+
+- Compile and target sdk is now 37 (Android 17).
+- Updated minimum supported SDK version to Flutter 3.44/Dart 3.12.
+- Migrated to Built-in Kotlin.
+
 ## 0.4.0
 
 - Compile and target sdk is now 36 (Android 16).
