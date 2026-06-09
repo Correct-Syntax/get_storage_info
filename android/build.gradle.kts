@@ -12,7 +12,6 @@ android {
 
     defaultConfig {
         minSdk = 24
-        
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -28,11 +27,13 @@ android {
 
     testOptions {
         unitTests.all {
-            it.useJUnitPlatform()
+            val testTask = this as? org.gradle.api.tasks.testing.Test
             
-            it.testLogging {
+            testTask?.useJUnitPlatform()
+            testTask?.outputs?.upToDateWhen { false }
+            
+            testTask?.testLogging {
                 events("passed", "skipped", "failed", "standardout", "standarderror")
-                outputs.upToDateWhen { false }
                 showStandardStreams = true
             }
         }
@@ -49,3 +50,4 @@ kotlin {
         jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
     }
 }
+

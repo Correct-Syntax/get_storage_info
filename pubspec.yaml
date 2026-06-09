@@ -1,6 +1,6 @@
 name: get_storage_info
 description: A plugin to show free, used, and total internal and external storage space.
-version: 0.5.2
+version: 0.5.3
 homepage: https://github.com/Correct-Syntax/get_storage_info
 
 environment:
