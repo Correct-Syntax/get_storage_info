@@ -3,10 +3,7 @@ import 'dart:async';
 import 'package:flutter/services.dart';
 
 /// Device storage type
-enum DeviceStorageType {
-  internal,
-  external,
-}
+enum DeviceStorageType { internal, external }
 
 /// A class through which all methods can be statically accessed.
 class GetStorageInfo {

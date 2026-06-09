@@ -1,3 +1,7 @@
+## 0.5.4
+
+- Let's try this one more time...
+
 ## 0.5.3
 
 - Let's try this again...
