@@ -1,3 +1,7 @@
+## 0.6.0
+
+- Overall code improvements.
+
 ## 0.5.4
 
 - Let's try this one more time...
