@@ -13,185 +13,99 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 
-/** GetStorageInfoPlugin */
 class GetStorageInfoPlugin : FlutterPlugin, MethodCallHandler {
-    // / The MethodChannel that will the communication between Flutter and native Android
-    // /
-    // / This local reference serves to register the plugin with the Flutter Engine and unregister it
-    // / when the Flutter Engine is detached from the Activity
     private lateinit var channel: MethodChannel
     private lateinit var context: Context
-
-    private var coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.Default)
+    
+    private var coroutineScope: CoroutineScope? = null
 
     override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
         context = flutterPluginBinding.applicationContext
+        coroutineScope = CoroutineScope(Dispatchers.Default)
         channel = MethodChannel(flutterPluginBinding.binaryMessenger, "get_storage_info")
         channel.setMethodCallHandler(this)
     }
 
-    override fun onMethodCall(
-        call: MethodCall,
-        result: Result,
-    ) {
-        coroutineScope.launch {
-            when (call.method) {
-                "getStorageFreeSpace" -> result.success(getStorageFreeSpace())
-                "getStorageUsedSpace" -> result.success(getStorageUsedSpace())
-                "getStorageTotalSpace" -> result.success(getStorageTotalSpace())
+    override fun onMethodCall(call: MethodCall, result: Result) {
+        when (call.method) {
+            "getStorageFreeSpace" -> result.success(getStorageFreeSpace())
+            "getStorageTotalSpace" -> result.success(getStorageTotalSpace())
+            "getStorageUsedSpace" -> result.success(getStorageUsedSpace())
+            
+            "getExternalStorageFreeSpace" -> result.success(getExternalStorageFreeSpace())
+            "getExternalStorageTotalSpace" -> result.success(getExternalStorageTotalSpace())
+            "getExternalStorageUsedSpace" -> result.success(getExternalStorageUsedSpace())
+            
+            "isExternalStorageWritable" -> result.success(isExternalStorageWritable())
 
-                "getExternalStorageTotalSpace" -> result.success(getExternalStorageTotalSpace())
-                "getExternalStorageFreeSpace" -> result.success(getExternalStorageFreeSpace())
-                "getExternalStorageUsedSpace" -> result.success(getExternalStorageUsedSpace())
-
-                "getStorageFreeSpaceInMB" -> result.success(getStorageFreeSpaceInMB())
-                "getStorageUsedSpaceInMB" -> result.success(getStorageUsedSpaceInMB())
-                "getStorageTotalSpaceInMB" -> result.success(getStorageTotalSpaceInMB())
-
-                "getStorageFreeSpaceInGB" -> result.success(getStorageFreeSpaceInGB())
-                "getStorageUsedSpaceInGB" -> result.success(getStorageUsedSpaceInGB())
-                "getStorageTotalSpaceInGB" -> result.success(getStorageTotalSpaceInGB())
-
-                "getExternalStorageTotalSpaceInMB" -> result.success(getExternalStorageTotalSpaceInMB())
-                "getExternalStorageFreeSpaceInMB" -> result.success(getExternalStorageFreeSpaceInMB())
-                "getExternalStorageUsedSpaceInMB" -> result.success(getExternalStorageUsedSpaceInMB())
-
-                "getExternalStorageTotalSpaceInGB" -> result.success(getExternalStorageTotalSpaceInGB())
-                "getExternalStorageFreeSpaceInGB" -> result.success(getExternalStorageFreeSpaceInGB())
-                "getExternalStorageUsedSpaceInGB" -> result.success(getExternalStorageUsedSpaceInGB())
-
-                "isExternalStorageWritable" -> result.success(isExternalStorageWritable())
-
-                "getSizeOfDirectoryInMB" -> {
-                    val directory: String? = call.argument("directory")
-                    result.success(getSizeOfDirectoryInMB(directory!!))
+            "getSizeOfDirectory" -> {
+                val directoryPath: String? = call.argument("directory")
+                if (directoryPath == null) {
+                    result.error("INVALID_ARGUMENT", "Directory path cannot be null", null)
+                    return
                 }
-
-                else -> result.notImplemented()
+                
+                coroutineScope?.launch {
+                    val size = getSizeOfDirectory(directoryPath)
+                    withContext(Dispatchers.Main) {
+                        result.success(size)
+                    }
+                } ?: result.error("DISPOSED", "Plugin scope is inactive", null)
             }
+
+            else -> result.notImplemented()
         }
     }
 
     private fun getStorageTotalSpace(): Long {
         val path: File = Environment.getExternalStorageDirectory()
-        val stat = StatFs(path.path)
-        return stat.totalBytes
+        return StatFs(path.path).totalBytes
     }
 
     private fun getStorageFreeSpace(): Long {
         val path: File = Environment.getExternalStorageDirectory()
-        val stat = StatFs(path.path)
-        return stat.availableBytes
+        return StatFs(path.path).availableBytes
     }
 
-    private fun getStorageUsedSpace(): Long {
-        val usedSpace: Long = getStorageTotalSpace() - getStorageFreeSpace()
-        return usedSpace
-    }
+    private fun getStorageUsedSpace(): Long = getStorageTotalSpace() - getStorageFreeSpace()
 
     private fun getExternalStorageTotalSpace(): Long {
         val dirs: Array<File> = getExternalFilesDirs(context, null)
-        val stat = StatFs(getBaseStoragePath(dirs[1]))
-        return stat.totalBytes
+        if (dirs.size < 2) return 0L // Guard against missing secondary SD card
+        return StatFs(getBaseStoragePath(dirs[1])).totalBytes
     }
 
     private fun getExternalStorageFreeSpace(): Long {
         val dirs: Array<File> = getExternalFilesDirs(context, null)
-        val stat = StatFs(getBaseStoragePath(dirs[1]))
-        return stat.availableBytes
+        if (dirs.size < 2) return 0L // Guard against missing secondary SD card
+        return StatFs(getBaseStoragePath(dirs[1])).availableBytes
     }
 
     private fun getExternalStorageUsedSpace(): Long {
-        val usedSpace: Long = getExternalStorageTotalSpace() - getExternalStorageFreeSpace()
-        return usedSpace
+        val total = getExternalStorageTotalSpace()
+        return if (total == 0L) 0L else total - getExternalStorageFreeSpace()
     }
 
-    // Storage space in MB
-    private fun getStorageFreeSpaceInMB(): Double {
-        val freeSpace: Double = getStorageFreeSpace().toDouble() / 1024 / 1024
-        return freeSpace
-    }
-
-    private fun getStorageUsedSpaceInMB(): Double {
-        val usedSpace: Double = getStorageUsedSpace().toDouble() / 1024 / 1024
-        return usedSpace
-    }
-
-    private fun getStorageTotalSpaceInMB(): Double {
-        val totalSpace: Double = getStorageTotalSpace().toDouble() / 1024 / 1024
-        return totalSpace
-    }
-
-    // Storage space in GB
-    private fun getStorageFreeSpaceInGB(): Double {
-        val freeSpace: Double = getStorageFreeSpace().toDouble() / 1024 / 1024 / 1024
-        return freeSpace
-    }
-
-    private fun getStorageUsedSpaceInGB(): Double {
-        val usedSpace: Double = getStorageUsedSpace().toDouble() / 1024 / 1024 / 1024
-        return usedSpace
-    }
-
-    private fun getStorageTotalSpaceInGB(): Double {
-        val totalSpace: Double = getStorageTotalSpace().toDouble() / 1024 / 1024 / 1024
-        return totalSpace
-    }
-
-    // External storage in MB
-    private fun getExternalStorageFreeSpaceInMB(): Double {
-        val freeSpace: Double = getExternalStorageFreeSpace().toDouble() / 1024 / 1024
-        return freeSpace
-    }
-
-    private fun getExternalStorageUsedSpaceInMB(): Double {
-        val usedSpace: Double = getExternalStorageUsedSpace().toDouble() / 1024 / 1024
-        return usedSpace
-    }
-
-    private fun getExternalStorageTotalSpaceInMB(): Double {
-        val totalSpace: Double = getExternalStorageTotalSpace().toDouble() / 1024 / 1024
-        return totalSpace
-    }
-
-    // External storage in GB
-    private fun getExternalStorageFreeSpaceInGB(): Double {
-        val freeSpace: Double = getExternalStorageFreeSpace().toDouble() / 1024 / 1024 / 1024
-        return freeSpace
-    }
-
-    private fun getExternalStorageUsedSpaceInGB(): Double {
-        val usedSpace: Double = getExternalStorageUsedSpace().toDouble() / 1024 / 1024 / 1024
-        return usedSpace
-    }
-
-    private fun getExternalStorageTotalSpaceInGB(): Double {
-        val totalSpace: Double = getExternalStorageTotalSpace().toDouble() / 1024 / 1024 / 1024
-        return totalSpace
-    }
-
-    // Check if external storage is writable
     private fun isExternalStorageWritable(): Boolean {
-        val state: String = Environment.getExternalStorageState();
-        if (Environment.MEDIA_MOUNTED.equals(state)) {
-            return true;
-        }
-        return false;
+        return Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED
     }
 
-    // Directory size
-    private fun getSizeOfDirectoryInMB(directory: String): Double {
-        val dirSize =
+    // Heavy I/O Operation (Returns raw bytes to Dart)
+    private fun getSizeOfDirectory(directory: String): Long {
+        return try {
             File(directory)
                 .walkTopDown()
+                .filter { it.isFile }
                 .map { it.length() }
-                .sum().toDouble() / 1024 / 1024
-        return dirSize
+                .sum()
+        } catch (e: Exception) {
+            0L
+        }
     }
 
-    // Utils
     private fun getBaseStoragePath(directory: File): String {
         // Handle cases where this is already the root dir
         return if (!directory.path.contains("Android")) {
@@ -203,5 +117,7 @@ class GetStorageInfoPlugin : FlutterPlugin, MethodCallHandler {
 
     override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         channel.setMethodCallHandler(null)
+        coroutineScope?.cancel()
+        coroutineScope = null
     }
 }
